@@ -1,6 +1,8 @@
 ﻿const STORAGE_KEY = 'cp_ai_literacy_v1';
 
-const SHEET_ENDPOINT = 'https://script.google.com/a/macros/codepresso.kr/s/AKfycbw9SGkxOxRuMbzMC5K6QWzdN-hxOg1jSAR-sad0cK65X7nQtb3OdpZeFfIuCmZZSWXl/exec';
+// Apps Script 웹 앱 URL — /a/macros/도메인/ 이 없는 일반 형태여야 외부 방문자도 접근 가능
+// 배포 설정: 실행 계정 "나" / 액세스 권한 "모든 사용자"
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw9SGkxOxRuMbzMC5K6QWzdN-hxOg1jSAR-sad0cK65X7nQtb3OdpZeFfIuCmZZSWXl/exec';
 
 
 const state = {
@@ -148,6 +150,37 @@ function renderResult() {
   }).join('');
 }
 
+// ── Sheet submission ──────────────────────────────────────────────
+
+function submitToSheet() {
+  // 문항별 선택 답안을 라벨(A~D)·텍스트로 변환
+  const answersDetail = state.answers.map((v, i) => {
+    const opt = QUESTIONS[i]?.options.find(o => o.value === v);
+    return opt
+      ? { label: opt.label, text: opt.text, value: v }
+      : { label: '', text: '', value: v };
+  });
+
+  const payload = {
+    name: state.user?.name || '',
+    email: state.user?.email || '',
+    company: state.user?.company || '',
+    job: state.user?.job || '',
+    marketing: !!state.user?.marketing,
+    level: state.level,
+    axisScores: state.axisScores,
+    answersDetail,
+    userAgent: navigator.userAgent,
+  };
+  // text/plain + no-cors: 프리플라이트 없이 Apps Script로 전송 (fire-and-forget)
+  return fetch(SHEET_ENDPOINT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+  }).catch(err => console.error('sheet submit failed:', err));
+}
+
 // ── Lead form ─────────────────────────────────────────────────────
 
 function resetLeadForm() {
@@ -184,7 +217,8 @@ function initLeadForm() {
     btn.disabled = true;
     btn.textContent = '리포트 준비 중...';
 
-    await new Promise(r => setTimeout(r, 700));
+    // 시트 저장 (실패해도 리포트 표시는 그대로 진행)
+    await Promise.all([submitToSheet(), new Promise(r => setTimeout(r, 700))]);
 
     try {
       renderDetailedResult();
