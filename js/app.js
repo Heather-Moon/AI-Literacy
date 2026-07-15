@@ -1,9 +1,5 @@
 ﻿const STORAGE_KEY = 'cp_ai_literacy_v1';
 
-// Apps Script 웹 앱 URL — /a/macros/도메인/ 이 없는 일반 형태여야 외부 방문자도 접근 가능
-// 배포 설정: 실행 계정 "나" / 액세스 권한 "모든 사용자"
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw9SGkxOxRuMbzMC5K6QWzdN-hxOg1jSAR-sad0cK65X7nQtb3OdpZeFfIuCmZZSWXl/exec';
-
 
 const state = {
   screen: 'landing',
