@@ -1,5 +1,8 @@
 ﻿const STORAGE_KEY = 'cp_ai_literacy_v1';
 
+const SHEET_ENDPOINT = 'https://script.google.com/a/macros/codepresso.kr/s/AKfycbw9SGkxOxRuMbzMC5K6QWzdN-hxOg1jSAR-sad0cK65X7nQtb3OdpZeFfIuCmZZSWXl/exec';
+
+
 const state = {
   screen: 'landing',
   currentQ: 0,
@@ -13,7 +16,7 @@ const state = {
 // ── Persistence ──────────────────────────────────────────────────
 
 function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) { }
 }
 
 function loadState() {
@@ -40,7 +43,7 @@ function showScreen(name) {
 function calculateResult() {
   const a = state.answers;
 
-  const freqAvg   = avg([a[0], a[1], a[2]]);                      // max 2.5
+  const freqAvg = avg([a[0], a[1], a[2]]);                      // max 2.5
   const promptAvg = avg([a[3], a[4], a[5], a[6], a[7]]);          // max 4.0
   const spreadRaw = avg([a[8], a[9], a[10]]);                      // max 4.0
 
@@ -126,12 +129,12 @@ function renderResult() {
   document.getElementById('result-description').textContent = lv.description;
   const as = state.axisScores || {};
   document.getElementById('result-score').innerHTML =
-    `빈도·깊이 <strong>${(as.freq||0).toFixed(1)}</strong>/2.5 &nbsp;·&nbsp; ` +
-    `프롬프트·자동화 <strong>${(as.prompt||0).toFixed(1)}</strong>/4.0 &nbsp;·&nbsp; ` +
-    `확산·주도 <strong>${(as.spread||0).toFixed(1)}</strong>/4.0`;
+    `빈도·깊이 <strong>${(as.freq || 0).toFixed(1)}</strong>/2.5 &nbsp;·&nbsp; ` +
+    `프롬프트·자동화 <strong>${(as.prompt || 0).toFixed(1)}</strong>/4.0 &nbsp;·&nbsp; ` +
+    `확산·주도 <strong>${(as.spread || 0).toFixed(1)}</strong>/4.0`;
 
   // 4-step progression
-  document.getElementById('result-level-progression').innerHTML = [1,2,3,4].flatMap((n, i) => {
+  document.getElementById('result-level-progression').innerHTML = [1, 2, 3, 4].flatMap((n, i) => {
     const lvData = LEVELS[n];
     const isCurrent = n === state.level;
     const isPast = n < state.level;
@@ -216,7 +219,7 @@ function renderDetailedResult() {
   document.getElementById('detail-level-tagline').textContent = lv.tagline;
 
   // ② Level position indicator + narrative
-  document.getElementById('detail-level-steps').innerHTML = [1,2,3,4].map(n => {
+  document.getElementById('detail-level-steps').innerHTML = [1, 2, 3, 4].map(n => {
     const lvData = LEVELS[n];
     const isCurrent = n === state.level;
     const isPast = n < state.level;
@@ -249,24 +252,24 @@ function renderDetailedResult() {
     const A = [-90, 30, 150];
     const px = (i, r) => (cx + r * Math.cos(A[i] * D)).toFixed(1);
     const py = (i, r) => (cy + r * Math.sin(A[i] * D)).toFixed(1);
-    const pts = r => [0,1,2].map(i => px(i,r)+','+py(i,r)).join(' ');
+    const pts = r => [0, 1, 2].map(i => px(i, r) + ',' + py(i, r)).join(' ');
 
-    const grid = [1,2,3,4].map(l =>
-      `<polygon points="${pts(l/4*R)}" fill="none" stroke="#E5E7EB" stroke-width="1"/>`
+    const grid = [1, 2, 3, 4].map(l =>
+      `<polygon points="${pts(l / 4 * R)}" fill="none" stroke="#E5E7EB" stroke-width="1"/>`
     ).join('');
-    const axes = [0,1,2].map(i =>
-      `<line x1="${cx}" y1="${cy}" x2="${px(i,R)}" y2="${py(i,R)}" stroke="#E5E7EB" stroke-width="1.2"/>`
+    const axes = [0, 1, 2].map(i =>
+      `<line x1="${cx}" y1="${cy}" x2="${px(i, R)}" y2="${py(i, R)}" stroke="#E5E7EB" stroke-width="1.2"/>`
     ).join('');
     const norm = i => Math.min(dimScores[i] / dimMax[i], 1);
-    const spts = [0,1,2].map(i => px(i, norm(i)*R)+','+py(i, norm(i)*R)).join(' ');
-    const dots = [0,1,2].map(i =>
-      `<circle cx="${px(i, norm(i)*R)}" cy="${py(i, norm(i)*R)}" r="4" fill="${lv.color}" stroke="white" stroke-width="2"/>`
+    const spts = [0, 1, 2].map(i => px(i, norm(i) * R) + ',' + py(i, norm(i) * R)).join(' ');
+    const dots = [0, 1, 2].map(i =>
+      `<circle cx="${px(i, norm(i) * R)}" cy="${py(i, norm(i) * R)}" r="4" fill="${lv.color}" stroke="white" stroke-width="2"/>`
     ).join('');
     const scaleNums = '';
 
-    const tpX = parseFloat(px(0,R)), tpY = parseFloat(py(0,R));
-    const brX = parseFloat(px(1,R)), brY = parseFloat(py(1,R));
-    const blX = parseFloat(px(2,R)), blY = parseFloat(py(2,R));
+    const tpX = parseFloat(px(0, R)), tpY = parseFloat(py(0, R));
+    const brX = parseFloat(px(1, R)), brY = parseFloat(py(1, R));
+    const blX = parseFloat(px(2, R)), blY = parseFloat(py(2, R));
     const lc = lv.color, gc = '#4B5563';
     const f = n => n.toFixed(1);
 
@@ -274,13 +277,13 @@ function renderDetailedResult() {
     const score10 = dimScores.map((s, i) => (s / dimMax[i] * 10).toFixed(1));
 
     const dimLabels = `
-      <text x="${f(tpX)}" y="${f(tpY-18)}" text-anchor="middle" font-size="11" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">${COMPETENCY_DIMS[0].label}</text>
-      <text x="${f(tpX)}" y="${f(tpY-4)}" text-anchor="middle" font-size="13" font-weight="800" fill="${lc}" font-family="Pretendard,sans-serif">${score10[0]}</text>
-      <text x="${f(brX+5)}" y="${f(brY+14)}" text-anchor="start" font-size="10" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">프롬프트</text>
-      <text x="${f(brX+5)}" y="${f(brY+26)}" text-anchor="start" font-size="10" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">· 자동화</text>
-      <text x="${f(brX+5)}" y="${f(brY+41)}" text-anchor="start" font-size="13" font-weight="800" fill="${lc}" font-family="Pretendard,sans-serif">${score10[1]}</text>
-      <text x="${f(blX-5)}" y="${f(blY+14)}" text-anchor="end" font-size="10" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">확산 · 주도</text>
-      <text x="${f(blX-5)}" y="${f(blY+29)}" text-anchor="end" font-size="13" font-weight="800" fill="${lc}" font-family="Pretendard,sans-serif">${score10[2]}</text>`;
+      <text x="${f(tpX)}" y="${f(tpY - 18)}" text-anchor="middle" font-size="11" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">${COMPETENCY_DIMS[0].label}</text>
+      <text x="${f(tpX)}" y="${f(tpY - 4)}" text-anchor="middle" font-size="13" font-weight="800" fill="${lc}" font-family="Pretendard,sans-serif">${score10[0]}</text>
+      <text x="${f(brX + 5)}" y="${f(brY + 14)}" text-anchor="start" font-size="10" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">프롬프트</text>
+      <text x="${f(brX + 5)}" y="${f(brY + 26)}" text-anchor="start" font-size="10" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">· 자동화</text>
+      <text x="${f(brX + 5)}" y="${f(brY + 41)}" text-anchor="start" font-size="13" font-weight="800" fill="${lc}" font-family="Pretendard,sans-serif">${score10[1]}</text>
+      <text x="${f(blX - 5)}" y="${f(blY + 14)}" text-anchor="end" font-size="10" font-weight="700" fill="${gc}" font-family="Pretendard,sans-serif">확산 · 주도</text>
+      <text x="${f(blX - 5)}" y="${f(blY + 29)}" text-anchor="end" font-size="13" font-weight="800" fill="${lc}" font-family="Pretendard,sans-serif">${score10[2]}</text>`;
 
     const radarSvg = `<svg viewBox="-10 -20 285 270" width="100%" xmlns="http://www.w3.org/2000/svg">
       ${grid}${axes}
@@ -292,7 +295,7 @@ function renderDetailedResult() {
       const score = dimScores[i];
       const sub = i === 0
         ? (score >= 2.0 ? dim.highLabel : score >= 1.5 ? dim.midLabel : dim.lowLabel)
-        : (score >= 3   ? dim.highLabel : score >= 2   ? dim.midLabel : dim.lowLabel);
+        : (score >= 3 ? dim.highLabel : score >= 2 ? dim.midLabel : dim.lowLabel);
       return `<div class="radar-score-card">
         <div class="radar-score-badge" style="background:${lv.color}18;color:${lv.color};border:1.5px solid ${lv.color}44">
           <span class="radar-score-val">${score10[i]}</span><span class="radar-score-max">/10</span>
@@ -352,9 +355,9 @@ function generatePersonalizedNarrative() {
   const p0 = LEVELS[state.level]?.description || '';
 
   // ── Para 1: 축 조합 고정 코멘트 ──
-  const freqTier   = axSc.freq   >= 2    ? '상' : axSc.freq   > 1.5  ? '중' : '하';
-  const promptTier = axSc.prompt >= 2.5  ? '상' : axSc.prompt > 2    ? '중' : '하';
-  const spreadTier = axSc.spread >= 3.25 ? '상' : axSc.spread > 2    ? '중' : '하';
+  const freqTier = axSc.freq >= 2 ? '상' : axSc.freq > 1.5 ? '중' : '하';
+  const promptTier = axSc.prompt >= 2.5 ? '상' : axSc.prompt > 2 ? '중' : '하';
+  const spreadTier = axSc.spread >= 3.25 ? '상' : axSc.spread > 2 ? '중' : '하';
   const p1 = AXIS_COMMENTS[freqTier]?.[promptTier]?.[spreadTier] || '';
 
   // 문항별 정규화 점수 (Q1~Q3 max=2.5, Q4~Q11 max=4)
@@ -386,7 +389,7 @@ function generatePersonalizedNarrative() {
 
   // ── Para 4: 축 불균형 관찰 (정규화 격차 ≥ 0.4일 때만) ──
   const normAxis = [
-    (axSc.freq   - 1) / 1.5,
+    (axSc.freq - 1) / 1.5,
     (axSc.prompt - 1) / 3,
     (axSc.spread - 1) / 3,
   ];
@@ -395,7 +398,7 @@ function generatePersonalizedNarrative() {
   let p4 = '';
   if (maxN - minN >= 0.4) {
     const strongDim = COMPETENCY_DIMS[normAxis.indexOf(maxN)];
-    const weakDim   = COMPETENCY_DIMS[normAxis.indexOf(minN)];
+    const weakDim = COMPETENCY_DIMS[normAxis.indexOf(minN)];
     p4 = `전반적으로 <strong>${strongDim.label}</strong> 축은 강한 반면 <strong>${weakDim.label}</strong> 축과의 격차가 있습니다. 이 불균형을 줄이는 것이 다음 단계로 가는 가장 빠른 길입니다.`;
   }
 
