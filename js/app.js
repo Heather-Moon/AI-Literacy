@@ -1,6 +1,6 @@
 ﻿const STORAGE_KEY = 'cp_ai_literacy_v1';
 
-
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzpp2q919l2s6lfBip3AKjdALloVk6eXeumL9uGSHdap3IldxQkF987uaLQwL7-vbzhQQ/exec';
 const state = {
   screen: 'landing',
   currentQ: 0,
