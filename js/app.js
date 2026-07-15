@@ -45,8 +45,8 @@ function calculateResult() {
   const promptAvg = avg([a[3], a[4], a[5], a[6], a[7]]);          // max 4.0
   const spreadRaw = avg([a[8], a[9], a[10]]);                      // max 4.0
 
-  // Q4(idx3), Q5(idx4), Q6(idx5), Q8(idx7) D=4 → +0.2 each to spread
-  const crossBonus = [3, 4, 5, 7].filter(i => a[i] === 4).length * 0.2;
+  // Q5(idx4), Q6(idx5), Q8(idx7) D=4 → +0.2 each to spread (Q4는 개인 검증 습관이라 가산 제외)
+  const crossBonus = [4, 5, 7].filter(i => a[i] === 4).length * 0.2;
   const spreadAvg = spreadRaw + crossBonus;
 
   let level;
