@@ -70,7 +70,7 @@
 - 역량 진단 차트 — 3축(빈도·깊이 / 프롬프트·자동화 / 확산·주도) SVG 레이더 차트(삼각형) + 축별 점수 카드
 - 현재 강점 / 성장 포인트 — 2열 카드
 - 다음 레벨 액션 플랜 — 구체적 발전 행동
-- Codepresso AI 솔루션 — AI Fluent(AI 역량 평가 플랫폼) + Adaptive Lecture(AI 맞춤 학습) 제품 소개
+- Codepresso AI 솔루션 — AI Fluent(AI 역량 평가 플랫폼) + SkillFit(AI 맞춤 학습) 제품 소개
 
 ### 문항별 출제 의도
 

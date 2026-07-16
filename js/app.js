@@ -357,7 +357,7 @@ function renderDetailedResult() {
         <div class="guide-detail">${g.detail}</div>
       </div>`).join('');
 
-  // ⑦ Product recommendation (AI Fluent + Adaptive Lecture)
+  // ⑦ Product recommendation (AI Fluent + SkillFit)
   document.getElementById('detail-tracks').innerHTML = `
     <div class="product-cards">
       <div class="product-card product-card--primary">
@@ -370,7 +370,7 @@ function renderDetailedResult() {
       <div class="product-card">
         <div class="product-card-icon">🧠</div>
         <span class="product-card-tag product-card-tag--learn">AI 맞춤 학습</span>
-        <div class="product-card-name">Adaptive Lecture</div>
+        <div class="product-card-name">SkillFit</div>
         <div class="product-card-desc">학습자의 수준과 학습 패턴을 분석해 최적의 강의를 제공하는 AI 맞춤 학습 기능입니다. 나의 AI 리터러시 단계에 맞는 학습 경로를 자동으로 설계합니다.</div>
         <a href="https://codepresso.io" target="_blank" rel="noopener" class="btn-primary track-cta-btn">자세히 보기 →</a>
       </div>
@@ -393,27 +393,28 @@ function generatePersonalizedNarrative() {
   // 문항별 정규화 점수 (Q1~Q3 max=2.5, Q4~Q11 max=4)
   const normVal = (v, i) => i < 3 ? (v || 0) / 2.5 : (v || 0) / 4;
   const scored = a.map((v, i) => ({ v: v || 0, i, n: normVal(v, i) }));
-  const sorted = [...scored].sort((x, y) => y.n - x.n);
+  const sorted = [...scored].sort((x, y) => {
+    if (Math.abs(y.n - x.n) < 0.001) return y.v - x.v; // 동점이면 절대 점수 높은 쪽
+    return y.n - x.n;
+  });
   const topQ = sorted[0];
   const lowQ = sorted[sorted.length - 1];
 
-  // ── Para 2: 강점 — 가장 높은 응답 인용 (정규화 ≥ 0.625, 즉 C 이상) ──
-  let p2 = '';
+  // Para 2 — 강점
   if (topQ && topQ.n >= 0.625) {
     const topOpt = QUESTIONS[topQ.i]?.options.find(o => o.value === topQ.v);
-    const ctx = QUESTION_CONTEXT[topQ.i];
-    if (topOpt && ctx) {
-      p2 = `<strong>"${topOpt.text}"</strong>라고 답하신 부분이 현재 단계의 핵심 강점으로 보입니다. ${ctx.strengthNote}`;
+    const note = QUESTION_CONTEXT[topQ.i]?.strengthNote?.[topQ.v];
+    if (topOpt && note) {
+      p2 = `<strong>"${topOpt.text}"</strong>라고 답하신 부분이 현재 단계의 핵심 강점입니다. ${note}`;
     }
   }
 
-  // ── Para 3: 성장 포인트 — 가장 낮은 응답 인용 (정규화 ≤ 0.375, 즉 B 이하) ──
-  let p3 = '';
+  // Para 3 — 성장 포인트
   if (lowQ && lowQ.n <= 0.375 && lowQ.i !== topQ?.i) {
     const lowOpt = QUESTIONS[lowQ.i]?.options.find(o => o.value === lowQ.v);
-    const ctx = QUESTION_CONTEXT[lowQ.i];
-    if (lowOpt && ctx) {
-      p3 = `반면 <strong>"${lowOpt.text}"</strong>라고 답하신 부분은 앞으로 가장 집중해서 키워야 할 영역입니다. ${ctx.growthNote}`;
+    const note = QUESTION_CONTEXT[lowQ.i]?.growthNote?.[lowQ.v];
+    if (lowOpt && note) {
+      p3 = `반면 <strong>"${lowOpt.text}"</strong>라고 답하신 부분은 앞으로 가장 집중해서 키워야 할 영역입니다. ${note}`;
     }
   }
 
