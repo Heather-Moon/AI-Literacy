@@ -1331,8 +1331,6 @@ input::placeholder {
   gap: 20px;
 }
 
-.comp-bar-row {}
-
 .comp-bar-header {
   display: flex;
   align-items: center;
@@ -1490,8 +1488,6 @@ input::placeholder {
   transform: translateY(-2px);
   background: linear-gradient(145deg, #EFF6FF 0%, #DBEAFE 100%);
 }
-
-.product-card--primary {}
 
 .product-card-icon {
   font-size: 40px;
