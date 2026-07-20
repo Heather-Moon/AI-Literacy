@@ -1771,6 +1771,14 @@ input::placeholder {
   padding-left: 36px;
 }
 
+/* Feedback survey link (header card, right side) */
+.detail-feedback-btn {
+  flex-shrink: 0;
+  background: var(--white);
+  border-color: rgba(26, 97, 234, .2);
+  white-space: nowrap;
+}
+
 /* Back button row */
 .detail-footer-nav {
   display: flex;
@@ -1836,6 +1844,10 @@ input::placeholder {
   .detail-header-card {
     flex-direction: column;
     text-align: center;
+  }
+
+  .detail-feedback-btn {
+    margin-top: 4px;
   }
 
   .detail-two-col {

@@ -46,6 +46,7 @@ function calculateResult() {
   const spreadRaw = avg([a[8], a[9], a[10]]);                      // max 4.0
 
   // Q5(idx4), Q6(idx5), Q8(idx7) D=4 → +0.2 each to spread (Q4는 개인 검증 습관이라 가산 제외)
+  // 세 문항의 D는 팀 표준화·공유·확산 성격을 띠므로 확산·주도 축에 가산 (실질 max 4.6)
   const crossBonus = [4, 5, 7].filter(i => a[i] === 4).length * 0.2;
   const spreadAvg = spreadRaw + crossBonus;
 
@@ -129,7 +130,7 @@ function renderResult() {
   document.getElementById('result-score').innerHTML =
     `빈도·깊이 <strong>${(as.freq || 0).toFixed(1)}</strong>/2.5 &nbsp;·&nbsp; ` +
     `프롬프트·자동화 <strong>${(as.prompt || 0).toFixed(1)}</strong>/4.0 &nbsp;·&nbsp; ` +
-    `확산·주도 <strong>${(as.spread || 0).toFixed(1)}</strong>/4.0`;
+    `확산·주도 <strong>${(as.spread || 0).toFixed(1)}</strong>/4.6`;
 
   // 4-step progression
   document.getElementById('result-level-progression').innerHTML = [1, 2, 3, 4].flatMap((n, i) => {
@@ -271,10 +272,10 @@ function renderDetailedResult() {
   document.getElementById('detail-narrative').innerHTML = generatePersonalizedNarrative();
 
   // ③ Competency radar chart (SVG triangle)
-  // freq max=2.5, prompt/spread max=4.0 (spread includes cross-axis bonus)
+  // freq max=2.5, prompt max=4.0, spread max=4.6 (cross-axis bonus 최대 0.6 포함)
   const axSc = state.axisScores || { freq: 0, prompt: 0, spread: 0 };
   const dimScores = [axSc.freq, axSc.prompt, axSc.spread];
-  const dimMax = [2.5, 4, 4];
+  const dimMax = [2.5, 4, 4.6];
   {
     const cx = 120, cy = 138, R = 92;
     const D = Math.PI / 180;
