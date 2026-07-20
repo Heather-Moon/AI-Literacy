@@ -215,7 +215,6 @@ function initLeadForm() {
 
     // 시트 저장 (실패해도 리포트 표시는 그대로 진행)
     await Promise.all([submitToSheet(), new Promise(r => setTimeout(r, 700))]);
-
     try {
       renderDetailedResult();
       showScreen('detail');
