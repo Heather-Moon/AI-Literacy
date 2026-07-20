@@ -401,6 +401,7 @@ function generatePersonalizedNarrative() {
   const lowQ = sorted[sorted.length - 1];
 
   // Para 2 — 강점
+  let p2 = '';
   if (topQ && topQ.n >= 0.625) {
     const topOpt = QUESTIONS[topQ.i]?.options.find(o => o.value === topQ.v);
     const note = QUESTION_CONTEXT[topQ.i]?.strengthNote?.[topQ.v];
@@ -410,6 +411,7 @@ function generatePersonalizedNarrative() {
   }
 
   // Para 3 — 성장 포인트
+  let p3 = '';
   if (lowQ && lowQ.n <= 0.375 && lowQ.i !== topQ?.i) {
     const lowOpt = QUESTIONS[lowQ.i]?.options.find(o => o.value === lowQ.v);
     const note = QUESTION_CONTEXT[lowQ.i]?.growthNote?.[lowQ.v];
