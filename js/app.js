@@ -8,6 +8,8 @@ const state = {
   score: null,
   level: null,
   axisScores: null,
+  job: null,
+  role: null,
   user: null,
 };
 
@@ -118,13 +120,31 @@ function goNext(idx) {
   if (next >= QUESTIONS.length) {
     calculateResult();
     saveState();
-    renderResult();
-    showScreen('result');
+    showProfileScreen();
   } else {
     state.currentQ = next;
     saveState();
     renderQuestion(next);
   }
+}
+
+// ── Profile screen (직무·역할, 결과 정확도 향상용) ───────────────────
+
+function showProfileScreen() {
+  document.getElementById('field-job').value = state.job || '';
+  document.getElementById('field-role').value = state.role || '';
+  showScreen('profile');
+}
+
+function initProfileForm() {
+  document.getElementById('profile-form').addEventListener('submit', e => {
+    e.preventDefault();
+    state.job = document.getElementById('field-job').value;
+    state.role = document.getElementById('field-role').value;
+    saveState();
+    renderResult();
+    showScreen('result');
+  });
 }
 
 // ── Result screen ─────────────────────────────────────────────────
@@ -178,6 +198,7 @@ function submitToSheet() {
     email: state.user?.email || '',
     company: state.user?.company || '',
     job: state.user?.job || '',
+    role: state.user?.role || '',
     marketing: !!state.user?.marketing,
     level: state.level,
     axisScores: state.axisScores,
@@ -220,7 +241,8 @@ function initLeadForm() {
       name,
       email,
       company: document.getElementById('field-company').value.trim(),
-      job: document.getElementById('field-job').value.trim(),
+      job: state.job || '',
+      role: state.role || '',
       marketing: document.getElementById('field-marketing').checked,
     };
     saveState();
@@ -373,22 +395,43 @@ function renderDetailedResult() {
       </div>`).join('');
 
   // ⑦ Product recommendation (AI Fluent + SkillFit)
+  // Lv1-2(탐색자·실행자)는 기초를 다지는 학습(SkillFit)을, Lv3-4(설계자·선도자)는 더 정교한 진단(AI Fluent)을 우선 추천
+  const isFoundationTier = state.level <= 2;
+
+  const fluentCard = {
+    icon: '🎯',
+    tagClass: 'eval',
+    tag: 'AI 역량 평가',
+    name: 'AI Fluent',
+    desc: isFoundationTier
+      ? '개인과 조직의 AI 활용 역량을 진단하는 평가 플랫폼입니다. 지금 수준을 기준점으로 남겨두면, 앞으로의 성장을 객관적으로 추적할 수 있습니다.'
+      : '개인과 조직의 AI 활용 역량을 정밀하게 진단하는 평가 플랫폼입니다. 축별 세부 지표와 팀·조직 단위 비교까지, 더 세분화된 진단으로 다음 단계를 정확히 설계해보세요.',
+  };
+  const skillfitCard = {
+    icon: '🧠',
+    tagClass: 'learn',
+    tag: 'AI 맞춤 학습',
+    name: 'SkillFit',
+    desc: isFoundationTier
+      ? '학습자의 수준과 패턴을 분석해 최적의 강의를 제공하는 AI 맞춤 학습 기능입니다. 지금 단계에 맞는 커리큘럼으로 AI 활용의 기초 체력을 먼저 다져보세요.'
+      : '학습자의 수준과 학습 패턴을 분석해 최적의 강의를 제공하는 AI 맞춤 학습 기능입니다. 이미 다져온 역량을 팀 전체로 확산시키는 데 활용할 수 있습니다.',
+  };
+
+  const primary = isFoundationTier ? skillfitCard : fluentCard;
+  const secondary = isFoundationTier ? fluentCard : skillfitCard;
+  const renderProductCard = (p, isPrimary) => `
+      <div class="product-card${isPrimary ? ' product-card--primary' : ''}">
+        <div class="product-card-icon">${p.icon}</div>
+        <span class="product-card-tag product-card-tag--${p.tagClass}">${p.tag}</span>
+        <div class="product-card-name">${p.name}</div>
+        <div class="product-card-desc">${p.desc}</div>
+        <a href="https://codepresso.io" target="_blank" rel="noopener" class="btn-primary track-cta-btn">자세히 보기 →</a>
+      </div>`;
+
   document.getElementById('detail-tracks').innerHTML = `
     <div class="product-cards">
-      <div class="product-card product-card--primary">
-        <div class="product-card-icon">🎯</div>
-        <span class="product-card-tag product-card-tag--eval">AI 역량 평가</span>
-        <div class="product-card-name">AI Fluent</div>
-        <div class="product-card-desc">개인과 조직의 AI 활용 역량을 정밀하게 진단하는 평가 플랫폼입니다. 객관적인 기준으로 현재 수준을 측정하고, 역량 성장 과정을 체계적으로 추적할 수 있습니다.</div>
-        <a href="https://codepresso.io" target="_blank" rel="noopener" class="btn-primary track-cta-btn">자세히 보기 →</a>
-      </div>
-      <div class="product-card">
-        <div class="product-card-icon">🧠</div>
-        <span class="product-card-tag product-card-tag--learn">AI 맞춤 학습</span>
-        <div class="product-card-name">SkillFit</div>
-        <div class="product-card-desc">학습자의 수준과 학습 패턴을 분석해 최적의 강의를 제공하는 AI 맞춤 학습 기능입니다. 나의 AI 리터러시 단계에 맞는 학습 경로를 자동으로 설계합니다.</div>
-        <a href="https://codepresso.io" target="_blank" rel="noopener" class="btn-primary track-cta-btn">자세히 보기 →</a>
-      </div>
+      ${renderProductCard(primary, true)}
+      ${renderProductCard(secondary, false)}
     </div>`;
 }
 
@@ -467,9 +510,9 @@ function init() {
   loadState();
 
   document.getElementById('start-btn').addEventListener('click', () => {
-    // Restore in-progress session
-    const hasProgress = state.answers.some(a => a !== null);
-    if (hasProgress && state.screen === 'question') {
+    // Restore in-progress session (완료되지 않은 응답이 남아있으면 이어서 진행)
+    const hasProgress = state.answers.some(a => a !== null) && state.level === null;
+    if (hasProgress) {
       showScreen('question');
       renderQuestion(state.currentQ);
       return;
@@ -479,10 +522,18 @@ function init() {
     state.answers = new Array(11).fill(null);
     state.score = null;
     state.level = null;
+    state.job = null;
+    state.role = null;
     state.user = null;
     saveState();
     showScreen('question');
     renderQuestion(0);
+  });
+
+  document.getElementById('exit-quiz-btn').addEventListener('click', () => {
+    const ok = window.confirm('진단을 종료하고 처음 화면으로 돌아갈까요?\n지금까지 답변한 내용은 저장되어 다음에 이어서 진행할 수 있어요.');
+    if (!ok) return;
+    showScreen('landing');
   });
 
   document.getElementById('see-report-btn').addEventListener('click', () => showScreen('lead-form'));
@@ -498,6 +549,8 @@ function init() {
     state.answers = new Array(11).fill(null);
     state.score = null;
     state.level = null;
+    state.job = null;
+    state.role = null;
     state.user = null;
     saveState();
     showScreen('landing');
@@ -509,11 +562,14 @@ function init() {
   });
 
   initLeadForm();
+  initProfileForm();
 
   // Restore previous session to correct screen
   if (state.screen === 'question' && state.answers.some(a => a !== null)) {
     showScreen('question');
     renderQuestion(state.currentQ);
+  } else if (state.screen === 'profile' && state.level) {
+    showProfileScreen();
   } else if ((state.screen === 'result' || state.screen === 'lead-form') && state.level) {
     renderResult();
     showScreen(state.screen);

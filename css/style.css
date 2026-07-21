@@ -171,6 +171,12 @@ textarea {
   border-color: var(--gray-400);
 }
 
+.header-exit-btn {
+  margin-left: auto;
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
 /* ── Footer ─────────────────────────────────────────────────────── */
 .footer {
   padding: 28px 32px;
@@ -860,7 +866,8 @@ label {
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+select {
   width: 100%;
   padding: 12px 14px;
   border: 1.5px solid var(--gray-200);
@@ -871,7 +878,12 @@ input[type="email"] {
   background: var(--white);
 }
 
-input:focus {
+select {
+  cursor: pointer;
+}
+
+input:focus,
+select:focus {
   outline: none;
   border-color: var(--blue);
   box-shadow: 0 0 0 3px rgba(26, 97, 234, .12);
@@ -1487,6 +1499,25 @@ input::placeholder {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
   background: linear-gradient(145deg, #EFF6FF 0%, #DBEAFE 100%);
+}
+
+.product-card--primary {
+  position: relative;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+
+.product-card--primary::before {
+  content: '지금 추천';
+  position: absolute;
+  top: -11px;
+  right: 20px;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 100px;
 }
 
 .product-card-icon {
