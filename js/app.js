@@ -23,6 +23,16 @@ function loadState() {
     if (raw) Object.assign(state, JSON.parse(raw));
   } catch (_) {
     localStorage.removeItem(STORAGE_KEY);
+    return;
+  }
+
+  // Guard against corrupted/out-of-range progress data
+  const total = QUESTIONS.length;
+  if (!Array.isArray(state.answers) || state.answers.length !== total) {
+    state.answers = new Array(total).fill(null);
+  }
+  if (!Number.isInteger(state.currentQ) || state.currentQ < 0 || state.currentQ >= total) {
+    state.currentQ = 0;
   }
 }
 
@@ -86,7 +96,12 @@ function renderQuestion(idx) {
 
   const backBtn = document.getElementById('back-btn');
   backBtn.style.visibility = idx === 0 ? 'hidden' : 'visible';
-  backBtn.onclick = () => { state.currentQ = idx - 1; saveState(); renderQuestion(idx - 1); };
+  backBtn.onclick = () => {
+    const prev = Math.max(0, idx - 1);
+    state.currentQ = prev;
+    saveState();
+    renderQuestion(prev);
+  };
 }
 
 function selectAnswer(idx, value, clickedBtn) {
