@@ -98,6 +98,58 @@
 
 
     <!-- ══════════════════════════════════════════
+       SCREEN 1.5 — PROFILE (직무·역할, 결과 정확도 향상용)
+  ══════════════════════════════════════════ -->
+    <div id="screen-profile" class="screen">
+
+      <header class="header">
+        <a href="https://codepresso.io" class="logo-link" target="_blank" rel="noopener">
+          <img src="https://codepresso.io/_nuxt/logo_blue.DDuFauW3.svg" alt="Codepresso" class="logo-img"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <span class="logo-fallback" style="display:none">codepresso</span>
+        </a>
+      </header>
+
+      <div class="form-container">
+        <div class="form-card">
+          <div class="form-header">
+            <h2>더 정확한 진단을 위해<br>2가지만 먼저 여쭤볼게요</h2>
+          </div>
+
+          <form id="profile-form" novalidate>
+            <div class="form-group">
+              <label for="field-job">어떤 직무에 가까우신가요? <span class="required">*</span></label>
+              <select id="field-job">
+                <option value="">선택해주세요</option>
+                <option value="기획">기획</option>
+                <option value="마케팅">마케팅</option>
+                <option value="영업">영업</option>
+                <option value="HR">HR</option>
+                <option value="개발">개발</option>
+                <option value="기타">기타</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="field-role">조직에서의 역할은? <span class="required">*</span></label>
+              <select id="field-role">
+                <option value="">선택해주세요</option>
+                <option value="실무자">실무자</option>
+                <option value="중간관리자">중간관리자</option>
+                <option value="리더(팀장 이상)">리더(팀장 이상)</option>
+              </select>
+            </div>
+
+            <div id="profile-form-error" class="form-error" style="display:none" role="alert"></div>
+
+            <button type="submit" class="btn-primary btn-submit">다음 →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
        SCREEN 2 — QUESTION
   ══════════════════════════════════════════ -->
     <div id="screen-question" class="screen">
@@ -127,56 +179,6 @@
 
         <div class="question-nav">
           <button id="back-btn" class="btn-ghost">← 이전</button>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- ══════════════════════════════════════════
-       SCREEN 2.5 — PROFILE (직무·역할, 결과 정확도 향상용)
-  ══════════════════════════════════════════ -->
-    <div id="screen-profile" class="screen">
-
-      <header class="header">
-        <a href="https://codepresso.io" class="logo-link" target="_blank" rel="noopener">
-          <img src="https://codepresso.io/_nuxt/logo_blue.DDuFauW3.svg" alt="Codepresso" class="logo-img"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-          <span class="logo-fallback" style="display:none">codepresso</span>
-        </a>
-      </header>
-
-      <div class="form-container">
-        <div class="form-card">
-          <div class="form-header">
-            <h2>결과를 더 정확히 보여드리기 위해<br>2가지만 더 여쭤볼게요</h2>
-          </div>
-
-          <form id="profile-form" novalidate>
-            <div class="form-group">
-              <label for="field-job">어떤 직무에 가까우신가요? <span class="optional">선택</span></label>
-              <select id="field-job">
-                <option value="">선택 안 함</option>
-                <option value="기획">기획</option>
-                <option value="마케팅">마케팅</option>
-                <option value="영업">영업</option>
-                <option value="HR">HR</option>
-                <option value="개발">개발</option>
-                <option value="기타">기타</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="field-role">조직에서의 역할은? <span class="optional">선택</span></label>
-              <select id="field-role">
-                <option value="">선택 안 함</option>
-                <option value="실무자">실무자</option>
-                <option value="중간관리자">중간관리자</option>
-                <option value="리더(팀장 이상)">리더(팀장 이상)</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn-primary btn-submit">결과 확인하기 →</button>
-          </form>
         </div>
       </div>
     </div>
@@ -291,7 +293,7 @@
               <label class="check-label">
                 <input type="checkbox" id="field-privacy">
                 <span>
-                  <strong>[필수]</strong> 개인정보 수집·이용 동의: 리포트 발송을 위해 이름, 이메일, 회사명을 수집합니다.
+                  <strong>[필수]</strong> 개인정보 수집·이용 동의: 마케팅 활용을 위해 이름, 이메일, 회사명을 수집합니다.
                   <a href="#" class="check-link" onclick="return false">(내용 보기)</a>
                 </span>
               </label>

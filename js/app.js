@@ -120,7 +120,8 @@ function goNext(idx) {
   if (next >= QUESTIONS.length) {
     calculateResult();
     saveState();
-    showProfileScreen();
+    renderResult();
+    showScreen('result');
   } else {
     state.currentQ = next;
     saveState();
@@ -133,17 +134,29 @@ function goNext(idx) {
 function showProfileScreen() {
   document.getElementById('field-job').value = state.job || '';
   document.getElementById('field-role').value = state.role || '';
+  document.getElementById('profile-form-error').style.display = 'none';
   showScreen('profile');
 }
 
 function initProfileForm() {
   document.getElementById('profile-form').addEventListener('submit', e => {
     e.preventDefault();
-    state.job = document.getElementById('field-job').value;
-    state.role = document.getElementById('field-role').value;
+    const job = document.getElementById('field-job').value;
+    const role = document.getElementById('field-role').value;
+    const errorEl = document.getElementById('profile-form-error');
+
+    if (!job || !role) {
+      errorEl.textContent = '직무와 역할을 모두 선택해 주세요.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+
+    state.job = job;
+    state.role = role;
     saveState();
-    renderResult();
-    showScreen('result');
+    showScreen('question');
+    renderQuestion(state.currentQ);
   });
 }
 
@@ -515,7 +528,7 @@ function init() {
       renderQuestion(state.currentQ);
       return;
     }
-    // Fresh start
+    // Fresh start — 직무·역할부터 먼저 수집
     state.currentQ = 0;
     state.answers = new Array(11).fill(null);
     state.score = null;
@@ -524,8 +537,7 @@ function init() {
     state.role = null;
     state.user = null;
     saveState();
-    showScreen('question');
-    renderQuestion(0);
+    showProfileScreen();
   });
 
   document.getElementById('exit-quiz-btn').addEventListener('click', () => {
@@ -566,7 +578,7 @@ function init() {
   if (state.screen === 'question' && state.answers.some(a => a !== null)) {
     showScreen('question');
     renderQuestion(state.currentQ);
-  } else if (state.screen === 'profile' && state.level) {
+  } else if (state.screen === 'profile') {
     showProfileScreen();
   } else if ((state.screen === 'result' || state.screen === 'lead-form') && state.level) {
     renderResult();
