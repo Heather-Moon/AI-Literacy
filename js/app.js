@@ -185,12 +185,10 @@ function renderResult() {
 // ── Sheet submission ──────────────────────────────────────────────
 
 function submitToSheet() {
-  // 문항별 선택 답안을 라벨(A~D)·텍스트로 변환
+  // 문항별 선택한 보기 라벨(A~D)만 저장 (답변 원문 텍스트는 저장하지 않음)
   const answersDetail = state.answers.map((v, i) => {
     const opt = QUESTIONS[i]?.options.find(o => o.value === v);
-    return opt
-      ? { label: opt.label, text: opt.text, value: v }
-      : { label: '', text: '', value: v };
+    return { label: opt?.label || '', value: v };
   });
 
   const payload = {
