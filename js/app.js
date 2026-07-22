@@ -462,12 +462,20 @@ function generatePersonalizedNarrative() {
   // 문항별 정규화 점수 (Q1~Q3 max=2.5, Q4~Q11 max=4)
   const normVal = (v, i) => i < 3 ? (v || 0) / 2.5 : (v || 0) / 4;
   const scored = a.map((v, i) => ({ v: v || 0, i, n: normVal(v, i) }));
-  const sorted = [...scored].sort((x, y) => {
+  const sortDesc = arr => [...arr].sort((x, y) => {
     if (Math.abs(y.n - x.n) < 0.001) return y.v - x.v; // 동점이면 절대 점수 높은 쪽
     return y.n - x.n;
   });
-  const topQ = sorted[0];
-  const lowQ = sorted[sorted.length - 1];
+
+  // 레벨을 실제로 가르는 축(Q4~11: 프롬프트·자동화, 확산·주도)을 강점/성장포인트의
+  // 우선 후보로 사용한다. Q4~11에서 기준을 충족하는 후보를 못 찾을 때만 Q1~3을 보조로 사용한다.
+  const levelAxis = sortDesc(scored.filter(s => s.i >= 3));
+  const freqAxis = sortDesc(scored.filter(s => s.i < 3));
+
+  const topQ = levelAxis[0].n >= 0.625 ? levelAxis[0] : freqAxis[0];
+  const lowQ = levelAxis[levelAxis.length - 1].n <= 0.375
+    ? levelAxis[levelAxis.length - 1]
+    : freqAxis[freqAxis.length - 1];
 
   // Para 2 — 강점
   let p2 = '';
@@ -475,17 +483,21 @@ function generatePersonalizedNarrative() {
     const topOpt = QUESTIONS[topQ.i]?.options.find(o => o.value === topQ.v);
     const note = QUESTION_CONTEXT[topQ.i]?.strengthNote?.[topQ.v];
     if (topOpt && note) {
-      p2 = `<strong>"${topOpt.text}"</strong>라고 답하신 부분이 현재 단계의 핵심 강점입니다. ${note}`;
+      p2 = note;
     }
   }
 
   // Para 3 — 성장 포인트
+  // 빈도축(Q1~3, 최대 2.5)은 최저 옵션도 정규화 점수가 0.4라 다른 문항과 같은
+  // 0.375 컷오프를 쓰면 항상 걸러진다. 강점 컷오프(0.625)와 동일한 기준선으로
+  // 하위 2개 옵션(정규화 0.4·0.6)을 포착하도록 빈도축만 컷오프를 올려준다.
+  const growthCutoff = lowQ && lowQ.i < 3 ? 0.625 : 0.375;
   let p3 = '';
-  if (lowQ && lowQ.n <= 0.375 && lowQ.i !== topQ?.i) {
+  if (lowQ && lowQ.n <= growthCutoff && lowQ.i !== topQ?.i) {
     const lowOpt = QUESTIONS[lowQ.i]?.options.find(o => o.value === lowQ.v);
     const note = QUESTION_CONTEXT[lowQ.i]?.growthNote?.[lowQ.v];
     if (lowOpt && note) {
-      p3 = `반면 <strong>"${lowOpt.text}"</strong>라고 답하신 부분은 앞으로 가장 집중해서 키워야 할 영역입니다. ${note}`;
+      p3 = note;
     }
   }
 
