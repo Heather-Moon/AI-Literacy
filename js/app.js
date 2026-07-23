@@ -229,8 +229,8 @@ async function shareApp() {
   }
 
   const shareData = {
-    title: 'AI 리터러시 진단 | Codepresso',
-    text: '나의 AI 활용 수준을 3분 만에 진단해보세요.',
+    title: '당신은 AI를 쓰는 사람인가요, 다루는 사람인가요?',
+    text: '11문항, 약 3분이면 나의 AI 활용 수준을 확인할 수 있어요.',
     url,
   };
 
