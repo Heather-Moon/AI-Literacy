@@ -4,7 +4,6 @@
   --blue-dark: #1450C8;
   --blue-light: #60A5FA;
   --blue-pale: #EEF4FF;
-  --purple: #7C3AED;
   --gray-50: #F9FAFB;
   --gray-100: #F3F4F6;
   --gray-200: #E5E7EB;
@@ -665,6 +664,14 @@ textarea {
   max-width: 640px;
 }
 
+.result-description p {
+  margin: 0 0 6px;
+}
+
+.result-description p:last-child {
+  margin-bottom: 0;
+}
+
 .result-score {
   display: none;
 }
@@ -1043,52 +1050,11 @@ input::placeholder {
   border-bottom: none;
 }
 
-/* ⓪ 기존 스타일 유지 */
-.detail-section-title.title--original {
-  font-size: 18px;
-  padding-bottom: 14px;
-  border-bottom: 2px solid var(--blue-pale);
-}
-
-/* ① 좌측 컬러 바 */
 .detail-section-title.title--bar {
   font-size: 20px;
   padding-left: 14px;
   border-left: 4px solid var(--blue);
   border-bottom: none;
-}
-
-/* ② 배지 태그 */
-.detail-section-title.title--badge {
-  font-size: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--blue-pale);
-  color: var(--blue-dark);
-  padding: 6px 16px 6px 12px;
-  border-radius: 100px;
-  border-bottom: none;
-}
-
-/* ③ 폰트 키우기 + 컬러 강조 */
-.detail-section-title.title--size {
-  font-size: 23px;
-  color: var(--blue);
-  letter-spacing: -0.3px;
-  border-bottom: none;
-}
-
-/* ④ 언더라인 그라디언트 */
-.detail-section-title.title--gradient {
-  font-size: 20px;
-  display: inline-block;
-  padding-bottom: 6px;
-  border-bottom: none;
-  background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .detail-section-desc {

@@ -173,7 +173,8 @@ function renderResult() {
   document.getElementById('result-level-name').textContent = `Lv.${lv.id} ${lv.name}`;
   document.getElementById('result-level-en').textContent = `(${lv.englishName})`;
   document.getElementById('result-tagline').textContent = lv.tagline;
-  document.getElementById('result-description').textContent = lv.description;
+  document.getElementById('result-description').innerHTML =
+    lv.description.split('\n').map(line => `<p>${line}</p>`).join('');
   const as = state.axisScores || {};
   document.getElementById('result-score').innerHTML =
     `빈도·깊이 <strong>${(as.freq || 0).toFixed(1)}</strong>/2.5 &nbsp;·&nbsp; ` +
