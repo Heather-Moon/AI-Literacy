@@ -170,6 +170,25 @@ textarea {
   border-color: var(--gray-400);
 }
 
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--blue-pale);
+  color: var(--blue-dark);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: all var(--transition);
+}
+
+.btn-share:hover {
+  background: #E0EAFF;
+  transform: translateY(-1px);
+}
+
 .header-exit-btn {
   margin-left: auto;
   padding: 8px 14px;
@@ -786,6 +805,12 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 12px;
+}
+
+.result-actions-row {
+  display: flex;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -1780,7 +1805,32 @@ input::placeholder {
 .detail-footer-nav {
   display: flex;
   justify-content: center;
+  gap: 12px;
   padding-top: 8px;
+}
+
+/* Share toast */
+.app-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translate(-50%, 16px);
+  background: var(--gray-900);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 100px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.app-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 /* ═══════════════════════════════════════════════════════════════

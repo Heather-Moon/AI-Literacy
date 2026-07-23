@@ -196,6 +196,62 @@ function renderResult() {
   }).join('');
 }
 
+// ── Share ─────────────────────────────────────────────────────────
+
+function getShareUrl() {
+  // 공유 링크는 항상 테스트 시작 화면(랜딩)으로 열리도록 쿼리·해시를 제외한 기본 URL만 사용
+  return `${location.origin}${location.pathname}`;
+}
+
+function showToast(message) {
+  let toast = document.getElementById('app-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.className = 'app-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+async function shareApp() {
+  const url = getShareUrl();
+
+  // file://로 로컬에서 열었을 때 Web Share/클립보드 API를 호출하면 크로미움 렌더러가
+  // RESULT_CODE_KILLED_BAD_MESSAGE로 강제 종료되는 문제가 있어 호출 자체를 건너뛴다.
+  // 이 경우 URL도 로컬 파일 경로라 실제 공유에는 의미가 없으므로 안내만 띄운다.
+  if (location.protocol === 'file:') {
+    window.prompt('배포된 주소에서 공유해야 정상 동작합니다. (현재는 로컬 파일 미리보기)', url);
+    return;
+  }
+
+  const shareData = {
+    title: 'AI 리터러시 진단 | Codepresso',
+    text: '나의 AI 활용 수준을 3분 만에 진단해보세요.',
+    url,
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return; // 사용자가 공유를 취소한 경우
+      // 그 외 실패(미지원 환경 등)는 아래 클립보드 복사로 폴백
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('링크가 복사되었습니다!');
+  } catch (err) {
+    window.prompt('아래 링크를 복사해 공유하세요', url);
+  }
+}
+
 // ── Sheet submission ──────────────────────────────────────────────
 
 function submitToSheet() {
@@ -583,6 +639,9 @@ function init() {
     renderResult();
     showScreen('result');
   });
+
+  document.getElementById('share-btn-result').addEventListener('click', shareApp);
+  document.getElementById('share-btn-detail').addEventListener('click', shareApp);
 
   initLeadForm();
   initProfileForm();
