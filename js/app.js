@@ -615,6 +615,10 @@ function init() {
     showScreen('landing');
   });
 
+  document.getElementById('exit-profile-btn').addEventListener('click', () => {
+    showScreen('landing');
+  });
+
   document.getElementById('see-report-btn').addEventListener('click', () => showScreen('lead-form'));
 
   document.getElementById('back-to-result-from-form-btn').addEventListener('click', () => {
