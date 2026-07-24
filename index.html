@@ -130,12 +130,12 @@
       <div class="form-container">
         <div class="form-card">
           <div class="form-header">
-            <h2>시작하기 전에<br>두 가지만 먼저 여쭤볼게요</h2>
+            <h2>시작하기 전에<br>두 가지만 확인할게요</h2>
           </div>
 
           <form id="profile-form" novalidate>
             <div class="form-group">
-              <label for="field-job">어떤 직무에 가까우신가요? <span class="required">*</span></label>
+              <label for="field-job">현재 담당하시는 직무는 무엇인가요? <span class="required">*</span></label>
               <select id="field-job">
                 <option value="">선택해주세요</option>
                 <option value="기획">기획</option>
@@ -148,7 +148,7 @@
             </div>
 
             <div class="form-group">
-              <label for="field-role">조직에서의 역할은? <span class="required">*</span></label>
+              <label for="field-role">조직 내에서 어떤 역할을 맡고 계시나요? <span class="required">*</span></label>
               <select id="field-role">
                 <option value="">선택해주세요</option>
                 <option value="실무자">실무자</option>
@@ -159,7 +159,7 @@
 
             <div id="profile-form-error" class="form-error" style="display:none" role="alert"></div>
 
-            <button type="submit" class="btn-primary btn-submit">다음 →</button>
+            <button type="submit" class="btn-primary btn-submit">시작하기 →</button>
           </form>
         </div>
       </div>
@@ -287,7 +287,8 @@
         <div class="form-card">
           <div class="form-header">
             <button id="back-to-result-from-form-btn" class="btn-ghost form-back-btn">← 결과로 돌아가기</button>
-            <h2>상세 리포트 받기</h2>
+            <h2>AI Literacy 진단 리포트 받기</h2>
+            <p>나의 강점 분석, 성장 포인트, 맞춤 학습 트랙을<br>지금 바로 확인해 보세요.</p>
           </div>
 
           <form id="lead-form" novalidate>
@@ -303,7 +304,7 @@
 
             <div class="form-group">
               <label for="field-company">회사명 <span class="optional">선택</span></label>
-              <input type="text" id="field-company" placeholder="(주)코드프레소" autocomplete="organization">
+              <input type="text" id="field-company" placeholder="주식회사 코드프레소" autocomplete="organization">
             </div>
 
             <div id="form-error" class="form-error" style="display:none" role="alert"></div>
@@ -323,7 +324,7 @@
               </label>
             </div>
 
-            <button type="submit" class="btn-primary btn-submit">리포트 확인하기 →</button>
+            <button type="submit" class="btn-primary btn-submit" disabled>리포트 확인하기 →</button>
           </form>
         </div>
       </div>

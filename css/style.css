@@ -139,9 +139,12 @@ textarea {
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  background: var(--gray-200);
+  color: var(--gray-400);
+  opacity: 1;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .btn-primary.btn-lg {

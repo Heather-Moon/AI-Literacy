@@ -286,12 +286,25 @@ function submitToSheet() {
 
 function resetLeadForm() {
   const btn = document.querySelector('#lead-form .btn-submit');
-  btn.disabled = false;
   btn.textContent = '리포트 확인하기 →';
   document.getElementById('form-error').style.display = 'none';
+  updateLeadSubmitState();
+}
+
+function updateLeadSubmitState() {
+  const name = document.getElementById('field-name').value.trim();
+  const email = document.getElementById('field-email').value.trim();
+  const privacy = document.getElementById('field-privacy').checked;
+  const valid = !!name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && privacy;
+  document.querySelector('#lead-form .btn-submit').disabled = !valid;
 }
 
 function initLeadForm() {
+  ['field-name', 'field-email'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateLeadSubmitState);
+  });
+  document.getElementById('field-privacy').addEventListener('change', updateLeadSubmitState);
+
   document.getElementById('lead-form').addEventListener('submit', async e => {
     e.preventDefault();
     const errEl = document.getElementById('form-error');
